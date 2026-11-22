@@ -7,3 +7,13 @@ const storeConfig = Object.freeze({
   facebookUrl: 'https://www.facebook.com/share/1JdYsCdRRW/?mibextid=wwXIfr',
   instagramUrl: 'https://www.instagram.com/power_punch.sy/',
 });
+
+// GitHub Pages has no /api. On *.github.io, data comes from the snapshots in /data.
+const PP_STATIC_HOST = /\.github\.io$/i.test(location.hostname);
+function ppFetch(path, options) {
+  if (!PP_STATIC_HOST) return fetch(path, options);
+  const snapshot = {'/api/products': 'data/products.json', '/api/storefront': 'data/storefront.json'}[path];
+  if (snapshot) return fetch(snapshot, {cache: 'force-cache'});
+  // Discount codes need the live server; report them as unavailable.
+  return Promise.resolve(new Response(JSON.stringify({error: 'unavailable'}), {status: 503, headers: {'Content-Type': 'application/json'}}));
+}

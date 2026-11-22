@@ -5,138 +5,110 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#080808">
 <meta name="color-scheme" content="dark">
-<title>PowerPunch | Sportswear, Supplements &amp; Training Equipment</title>
-<meta name="description" content="PowerPunch brings sportswear, supplements and training equipment together. تسوّق الملابس والمكملات والأدوات الرياضية من PowerPunch.">
-<link rel="icon" type="image/png" sizes="32x32" href="/products/powerpunch-favicon-32.png">
-<link rel="icon" type="image/png" sizes="48x48" href="/products/powerpunch-favicon-48.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/products/powerpunch-favicon-180.png">
-<link rel="preload" as="image" href="/products/home/hero-athlete.jpg" fetchpriority="high">
+<title>PowerPunch | Gymwear, Supplements &amp; Training Gear</title>
+<meta name="description" content="PowerPunch: gymwear, supplements and training gear. ملابس رياضية، مكمّلات وأدوات تمرين مع توصيل بحلب واللاذقية.">
+<link rel="icon" type="image/png" sizes="32x32" href="products/powerpunch-favicon-32.png">
+<link rel="icon" type="image/png" sizes="48x48" href="products/powerpunch-favicon-48.png">
+<link rel="apple-touch-icon" sizes="180x180" href="products/powerpunch-favicon-180.png">
+<link rel="preload" as="image" href="products/home/hero-athlete.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800;1,900&family=Cairo:wght@400;600;700&display=swap">
-<link rel="stylesheet" href="/src/home.css">
+<link rel="stylesheet" href="src/home.css">
 <script>document.documentElement.classList.add('js')</script>
-<script defer src="/src/config.js"></script>
-<script defer src="/src/home.js"></script>
+<script defer src="src/config.js"></script>
+<script defer src="src/home.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header" data-header>
   <div class="header-inner">
-    <a class="site-logo" href="/" aria-label="PowerPunch — home">
-      <img src="/products/home/powerpunch-logo-160.webp" srcset="/products/home/powerpunch-logo-160.webp 160w, /products/home/powerpunch-logo-320.webp 320w" sizes="64px" width="160" height="158" alt="PowerPunch — Supplements &amp; More">
+    <a class="site-logo" href="./" aria-label="PowerPunch home">
+      <img src="products/home/powerpunch-lockup-180.webp" srcset="products/home/powerpunch-lockup-180.webp 180w, products/home/powerpunch-lockup-360.webp 360w" sizes="132px" width="180" height="107" alt="PowerPunch, Supplements &amp; More">
     </a>
     <nav class="site-nav" aria-label="Main">
-      <a href="/" aria-current="page">Home</a>
-      <a href="/clothes">Clothing</a>
-      <a href="/supplements">Supplements</a>
-      <a href="/equipment">Equipment</a>
+      <a href="./" aria-current="page">Home</a>
+      <a href="clothes.html">Clothing</a>
+      <a href="supplements.html">Supplements</a>
+      <a href="equipment.html">Equipment</a>
     </nav>
-    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
-      <span class="menu-toggle-label">Menu</span>
-      <span class="menu-toggle-icon" aria-hidden="true"><span></span><span></span></span>
-    </button>
+    <div class="menu" data-menu-root>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-panel" aria-label="Open menu" data-menu-toggle>
+        <span class="menu-toggle-icon" aria-hidden="true"><span></span><span></span></span>
+      </button>
+      <nav class="menu-panel" id="menu-panel" aria-label="Mobile" data-menu hidden>
+        <a href="./" aria-current="page">Home</a>
+        <a href="clothes.html">Clothing</a>
+        <a href="supplements.html">Supplements</a>
+        <a href="equipment.html">Equipment</a>
+      </nav>
+    </div>
   </div>
 </header>
 
-<div class="mobile-menu" id="mobile-menu" data-menu hidden>
-  <nav aria-label="Mobile">
-    <a href="/" aria-current="page"><span class="mm-num">01</span>Home<span class="mm-ar" lang="ar">الرئيسية</span></a>
-    <a href="/clothes"><span class="mm-num">02</span>Clothing<span class="mm-ar" lang="ar">الملابس</span></a>
-    <a href="/supplements"><span class="mm-num">03</span>Supplements<span class="mm-ar" lang="ar">المكملات</span></a>
-    <a href="/equipment"><span class="mm-num">04</span>Equipment<span class="mm-ar" lang="ar">الأدوات الرياضية</span></a>
-  </nav>
-</div>
-
 <main id="main">
 
-  <!-- 01 — HERO -->
-  <section class="hero" aria-labelledby="hero-title" data-hero>
-    <div class="hero-stage">
-      <div class="hero-layer hero-layer--glow" aria-hidden="true"><div class="hero-glow"></div><div class="hero-floor"></div></div>
-      <div class="hero-layer hero-layer--word" aria-hidden="true"><span class="hero-word">POWER<span>PUNCH</span></span></div>
-      <div class="hero-layer hero-layer--athlete">
-        <div class="hero-athlete">
-          <img class="hero-photo" src="/products/home/hero-athlete.jpg" width="736" height="414" alt="Athlete with arms spread wide, back and shoulders lit against a black background" fetchpriority="high" decoding="async" data-hero-photo>
-          <canvas class="hero-light" aria-hidden="true" data-hero-light></canvas>
+  <!-- Pinned opening: the hero stays in place while scrolling, its elements move
+       away in depth and the brand statement takes their place. -->
+  <div class="hero-track" data-hero-track>
+    <div class="hero-pin">
+
+      <section class="hero" aria-labelledby="hero-title" data-hero>
+        <div class="hero-stage">
+          <div class="hero-layer hero-layer--glow" aria-hidden="true"><div class="hero-glow"></div><div class="hero-floor"></div></div>
+          <div class="hero-layer hero-layer--word" aria-hidden="true"><span class="hero-word">POWER<span>PUNCH</span></span></div>
+          <div class="hero-layer hero-layer--athlete">
+            <div class="hero-athlete">
+              <div class="hero-athlete-inner">
+                <img class="hero-photo" src="products/home/hero-athlete.jpg" width="736" height="414" alt="Athlete with arms spread wide, back and shoulders lit against a black background" fetchpriority="high" decoding="async" data-hero-photo>
+                <canvas class="hero-light" aria-hidden="true" data-hero-light></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="hero-shade" aria-hidden="true"></div>
+          <div class="grain" aria-hidden="true"></div>
         </div>
-      </div>
-      <div class="hero-shade" aria-hidden="true"></div>
-      <div class="grain" aria-hidden="true"></div>
-    </div>
 
-    <div class="hero-rail" aria-hidden="true">
-      <span>Supplements &amp; more</span>
-      <span class="hero-rail-line"></span>
-      <span>Est. PowerPunch</span>
-    </div>
+        <div class="hero-content container">
+          <h1 id="hero-title" class="hero-title" data-field="title"><span class="line"><span class="line-inner hero-line-1" data-enter="1">Punch above</span></span> <span class="line"><span class="line-inner hero-line-2 accent" data-enter="2">your weight.</span></span></h1>
+          <div class="hero-aside-wrap">
+            <div class="hero-aside" data-enter="3">
+              <p class="hero-intro" lang="ar" dir="rtl" data-field="intro">ملابس رياضية، مكمّلات وأدوات تمرين. اختار اللي بيناسب تمرينك واطلبه بسهولة.</p>
+              <a class="btn btn--primary" href="#categories">
+                <span>Shop now</span>
+                <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14m0 0-5.5-5.5M12 19l5.5-5.5"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
 
-    <div class="hero-content container">
-      <div class="hero-main">
-        <p class="eyebrow hero-eyebrow" data-enter="1"><span class="eyebrow-block" aria-hidden="true"></span><span data-field="eyebrow">POWERPUNCH / SYRIA</span></p>
-        <h1 id="hero-title" class="hero-title" data-field="title"><span class="line"><span class="line-inner" data-enter="2">Earn your</span></span> <span class="line"><span class="line-inner accent" data-enter="3">power.</span></span></h1>
-      </div>
-      <div class="hero-aside" data-enter="4">
-        <p class="hero-intro">Sportswear, supplements and training equipment for athletes who show up — every session, every round.</p>
-        <p class="hero-intro-ar" lang="ar" dir="rtl" data-field="intro">ملابس ومكملات وأدوات رياضية تحت سقف واحد. جهّز حالك للتمرين، من أول تكرار لآخر جولة.</p>
-        <a class="btn btn--primary" href="#categories">
-          <span>Explore products</span>
-          <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15m0 0-6-6m6 6 6-6"/></svg>
-        </a>
-      </div>
-    </div>
+        <span class="scroll-hint" aria-hidden="true" data-enter="4"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span>
+      </section>
 
-    <a class="scroll-cue" href="#brand" aria-label="Scroll to the brand introduction" data-enter="5"><span class="scroll-cue-line" aria-hidden="true"></span><span aria-hidden="true">Scroll</span></a>
-  </section>
+      <section class="brand" id="brand" aria-labelledby="brand-title" data-brand>
+        <div class="container brand-inner">
+          <h2 id="brand-title" class="brand-title">
+            <span class="brand-line"><span>Built for</span></span>
+            <span class="brand-line brand-line--outline"><span>performance.</span></span>
+            <span class="brand-line"><span>Driven by</span></span>
+            <span class="brand-line brand-line--red"><span>discipline.</span></span>
+          </h2>
+          <p class="brand-copy" lang="ar" dir="rtl">PowerPunch بيجمعلك لبس التمرين والمكمّلات والأدوات الرياضية بمكان واحد. استلام أو توصيل بحلب واللاذقية، وشحن عبر القدموس لباقي المناطق.</p>
+        </div>
+      </section>
 
-  <!-- 02 — BRAND INTRODUCTION -->
-  <section class="intro" id="brand" aria-labelledby="intro-title">
-    <div class="intro-geo" aria-hidden="true"><span class="geo-slash"></span><span class="geo-frame"></span></div>
-    <div class="container intro-grid">
-      <p class="section-label" data-reveal><span class="section-num">02</span><span>The brand</span></p>
-      <h2 id="intro-title" class="intro-title">
-        <span class="line"><span class="line-inner" data-reveal>Built for</span></span>
-        <span class="line"><span class="line-inner" data-reveal style="--d:1">performance.</span></span>
-        <span class="line"><span class="line-inner" data-reveal style="--d:2">Driven by</span></span>
-        <span class="line"><span class="line-inner" data-reveal style="--d:3"><mark>discipline.</mark></span></span>
-      </h2>
-      <div class="intro-body" data-reveal style="--d:2">
-        <p>PowerPunch brings sportswear, supplements and training equipment together in one place — so everything that supports your training is ready when you are.</p>
-        <ul class="pillars" role="list">
-          <li><span class="pillar-num">01</span><span>Sportswear</span></li>
-          <li><span class="pillar-num">02</span><span>Supplements</span></li>
-          <li><span class="pillar-num">03</span><span>Equipment</span></li>
-        </ul>
-      </div>
     </div>
-    <div class="container intro-facts" lang="ar" dir="rtl">
-      <article class="fact" data-reveal>
-        <p class="fact-label" data-field="label1">01 / التمرين</p>
-        <h3 class="fact-title" data-field="heading1">جاهز لكل تمرين</h3>
-        <p class="fact-copy" data-field="body1">تسوّق الملابس الرياضية حسب اللون والمقاس، واختار المكملات حسب الوزن والنكهة.</p>
-      </article>
-      <article class="fact" data-reveal style="--d:1">
-        <p class="fact-label" data-field="label2">02 / الاستلام</p>
-        <h3 class="fact-title" data-field="heading2">استلمها بالطريقة اللي بتناسبك</h3>
-        <p class="fact-copy" data-field="body2">استلام أو توصيل بحلب واللاذقية، وشحن عبر مراكز القدموس لباقي المناطق.</p>
-      </article>
-    </div>
-  </section>
+  </div>
 
-  <!-- 03 — EXPLORE CATEGORIES -->
   <section class="categories" id="categories" aria-labelledby="categories-title">
     <div class="container">
-      <div class="section-head">
-        <p class="section-label" data-reveal><span class="section-num">03</span><span>Explore</span></p>
-        <h2 id="categories-title" class="section-title"><span class="line"><span class="line-inner" data-reveal>Shop by <em>category</em></span></span></h2>
-        <p class="section-sub" data-reveal style="--d:1">Choose what supports your training.</p>
-      </div>
+      <h2 id="categories-title" class="section-title"><span class="line"><span class="line-inner" data-reveal>Shop by <em>category</em></span></span></h2>
 
       <ul class="category-grid" role="list">
         <li class="category-item" data-reveal>
-          <a class="cat-card cat-card--clothing" href="/clothes" data-tilt>
+          <a class="cat-card cat-card--clothing" href="clothes.html" data-tilt>
             <span class="cat-media">
               <img src="https://res.cloudinary.com/xeapmfka/image/upload/f_auto,q_auto,w_800/v1794849472/powerpunch/0b4f4b01-3a33-4ac7-b1d1-33d60e2b6fd4.png"
                    srcset="https://res.cloudinary.com/xeapmfka/image/upload/f_auto,q_auto,w_480/v1794849472/powerpunch/0b4f4b01-3a33-4ac7-b1d1-33d60e2b6fd4.png 480w,
@@ -145,42 +117,42 @@
                    sizes="(max-width: 900px) 92vw, 30vw" width="1254" height="1254" alt="" loading="lazy" decoding="async">
             </span>
             <span class="cat-light" aria-hidden="true"></span>
-            <span class="cat-index" aria-hidden="true">01</span>
             <span class="cat-body">
-              <span class="cat-ar" lang="ar">الملابس</span>
-              <span class="cat-title">Clothing</span>
-              <span class="cat-desc">Compression tops, tees, joggers and shorts.</span>
-              <span class="cat-cta"><span>Shop clothing</span><span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span></span>
+              <span class="cat-text">
+                <span class="cat-title">Clothing</span>
+                <span class="cat-desc" lang="ar" dir="rtl">بلايز كومبرشن، تيشيرتات، بناطيل وشورتات.</span>
+              </span>
+              <span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span>
             </span>
           </a>
         </li>
         <li class="category-item" data-reveal style="--d:1">
-          <a class="cat-card cat-card--supplements" href="/supplements" data-tilt>
+          <a class="cat-card cat-card--supplements" href="supplements.html" data-tilt>
             <span class="cat-media">
-              <img src="/products/home/category-supplements.jpg" width="736" height="736" alt="" loading="lazy" decoding="async">
+              <img src="products/home/category-supplements.jpg" width="736" height="736" alt="" loading="lazy" decoding="async">
             </span>
             <span class="cat-light" aria-hidden="true"></span>
-            <span class="cat-index" aria-hidden="true">02</span>
             <span class="cat-body">
-              <span class="cat-ar" lang="ar">المكملات</span>
-              <span class="cat-title">Supplements</span>
-              <span class="cat-desc">Protein, creatine and pre-workout.</span>
-              <span class="cat-cta"><span>Shop supplements</span><span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span></span>
+              <span class="cat-text">
+                <span class="cat-title">Supplements</span>
+                <span class="cat-desc" lang="ar" dir="rtl">بروتين، كرياتين ومنشطات قبل التمرين.</span>
+              </span>
+              <span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span>
             </span>
           </a>
         </li>
         <li class="category-item" data-reveal style="--d:2">
-          <a class="cat-card cat-card--equipment" href="/equipment" data-tilt>
+          <a class="cat-card cat-card--equipment" href="equipment.html" data-tilt>
             <span class="cat-media">
-              <img src="/products/home/category-equipment.jpg" width="736" height="414" alt="" loading="lazy" decoding="async">
+              <img src="products/home/category-equipment.jpg" width="736" height="414" alt="" loading="lazy" decoding="async">
             </span>
             <span class="cat-light" aria-hidden="true"></span>
-            <span class="cat-index" aria-hidden="true">03</span>
             <span class="cat-body">
-              <span class="cat-ar" lang="ar">الأدوات الرياضية</span>
-              <span class="cat-title">Equipment</span>
-              <span class="cat-desc">Gear for training at the gym or at home.</span>
-              <span class="cat-cta"><span>Shop equipment</span><span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span></span>
+              <span class="cat-text">
+                <span class="cat-title">Equipment</span>
+                <span class="cat-desc" lang="ar" dir="rtl">شيكرات وأدوات تمرين للنادي والبيت.</span>
+              </span>
+              <span class="cat-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14m0 0-6-6m6 6-6 6"/></svg></span>
             </span>
           </a>
         </li>
@@ -188,27 +160,20 @@
     </div>
   </section>
 
-  <!-- 04 — BRAND STATEMENT -->
   <section class="statement" aria-labelledby="statement-title" data-statement>
     <div class="statement-glow" aria-hidden="true"></div>
-    <div class="statement-ropes" aria-hidden="true"><span></span><span></span><span></span></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="container statement-inner">
-      <p class="section-label"><span class="section-num">04</span><span>The mindset</span></p>
+      <div class="progress-bar" aria-hidden="true"><span></span></div>
       <h2 id="statement-title" class="statement-title">
         <span class="st-line st-line--1">No shortcuts.</span>
         <span class="st-line st-line--2"><span class="st-outline">Just</span> progress.</span>
       </h2>
-      <div class="progress-rail" aria-hidden="true">
-        <span class="rail-label">Progress</span>
-        <span class="rail-track"><span class="rail-fill"></span><span class="rail-ticks"></span></span>
-        <span class="rail-count" data-rail-count>000</span>
-      </div>
       <div class="statement-foot">
-        <p>Ready for the next step?</p>
+        <p lang="ar" dir="rtl">كل تمرين بيقرّبك خطوة. جهّز حالك وكمّل.</p>
         <a class="btn btn--primary" href="#categories">
-          <span>Explore products</span>
-          <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V5m0 0-6 6m6-6 6 6"/></svg>
+          <span>Pick your gear</span>
+          <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5m0 0-5.5 5.5M12 5l5.5 5.5"/></svg>
         </a>
       </div>
     </div>
@@ -216,49 +181,24 @@
 
 </main>
 
-<!-- 05 — FOOTER -->
 <footer class="site-footer">
-  <div class="container footer-grid">
-    <div class="footer-brand">
-      <a class="footer-logo" href="/" aria-label="PowerPunch — home">
-        <img src="/products/home/powerpunch-logo-320.webp" srcset="/products/home/powerpunch-logo-320.webp 320w, /products/home/powerpunch-logo-640.webp 640w" sizes="144px" width="320" height="316" alt="PowerPunch — Supplements &amp; More" loading="lazy" decoding="async">
-      </a>
-      <p class="footer-desc">Sportswear, supplements and training equipment — built around discipline, consistency and progress.</p>
-      <p class="footer-desc footer-desc--ar" lang="ar" dir="rtl">ملابس ومكملات وأدوات رياضية تحت سقف واحد.</p>
-    </div>
-
-    <nav class="footer-col" aria-labelledby="footer-pages">
-      <h2 class="footer-heading" id="footer-pages">Pages</h2>
-      <ul role="list">
-        <li><a href="/" aria-current="page">Home</a></li>
-        <li><a href="/clothes">Clothing</a></li>
-        <li><a href="/supplements">Supplements</a></li>
-        <li><a href="/equipment">Equipment</a></li>
-      </ul>
-    </nav>
-
-    <div class="footer-col">
-      <h2 class="footer-heading">Contact</h2>
-      <ul role="list">
-        <li><a href="https://wa.me/message/ZHT4ZS3JJYTSL1" target="_blank" rel="noopener" data-contact="whatsapp">WhatsApp <span class="ext" aria-hidden="true">↗</span></a></li>
-        <li><a href="https://www.instagram.com/power_punch.sy/" target="_blank" rel="noopener" data-contact="instagram">Instagram <span class="ext" aria-hidden="true">↗</span></a></li>
-        <li><a href="https://www.facebook.com/share/1JdYsCdRRW/?mibextid=wwXIfr" target="_blank" rel="noopener" data-contact="facebook">Facebook <span class="ext" aria-hidden="true">↗</span></a></li>
-      </ul>
-    </div>
-
-    <div class="footer-col footer-col--ar" lang="ar" dir="rtl">
-      <h2 class="footer-heading">الاستلام والتوصيل</h2>
-      <ul role="list" class="centers">
-        <li><b>اللاذقية</b><span>أوتستراد الزراعة، بجانب مكتبة مطر</span></li>
-        <li><b>حلب</b><span>ساحة العزيزية، مقابل ماجيلا أزهار مرجانة</span></li>
-        <li><span>شحن عبر مراكز القدموس لباقي المناطق.</span></li>
-      </ul>
-    </div>
+  <div class="container footer-main">
+    <a class="footer-logo" href="./" aria-label="PowerPunch home">
+      <img src="products/home/powerpunch-lockup-360.webp" srcset="products/home/powerpunch-lockup-180.webp 180w, products/home/powerpunch-lockup-360.webp 360w" sizes="150px" width="360" height="214" alt="PowerPunch, Supplements &amp; More" loading="lazy" decoding="async">
+    </a>
+    <ul class="footer-social" role="list" aria-label="Contact">
+      <li><a href="https://wa.me/message/ZHT4ZS3JJYTSL1" target="_blank" rel="noopener" data-contact="whatsapp">WhatsApp</a></li>
+      <li><a href="https://www.instagram.com/power_punch.sy/" target="_blank" rel="noopener" data-contact="instagram">Instagram</a></li>
+      <li><a href="https://www.facebook.com/share/1JdYsCdRRW/?mibextid=wwXIfr" target="_blank" rel="noopener" data-contact="facebook">Facebook</a></li>
+    </ul>
+    <ul class="footer-centers" role="list" lang="ar" dir="rtl" aria-label="نقاط الاستلام">
+      <li><b>اللاذقية</b> أوتستراد الزراعة، بجانب مكتبة مطر</li>
+      <li><b>حلب</b> ساحة العزيزية، مقابل ماجيلا أزهار مرجانة</li>
+    </ul>
   </div>
-
   <div class="container footer-bottom">
-    <p>© 2026 PowerPunch. All Rights Reserved.</p>
-    <p lang="ar" dir="rtl">تصميم وبرمجة Dr Progrmmer</p>
+    <p>© 2026 PowerPunch</p>
+    <p>Zain Alloush</p>
   </div>
 </footer>
 </body>

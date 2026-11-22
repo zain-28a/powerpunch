@@ -10,6 +10,14 @@ Product data comes from the server API (`/api/products`, `/api/storefront`), whi
 | Supplements | `supplements.html` | `src/supplements.css`, `src/supplements.js`, … |
 | Equipment | `equipment.html` | `src/supplements.css`, `src/supplements.js`, … |
 
+## GitHub Pages
+
+Deployed by `.github/workflows/pages.yml` to `https://zain-28a.github.io/powerpunch/`.
+The workflow enables Pages itself. If the first run fails on that step, set Settings → Pages → Source: **GitHub Actions** once.
+
+On `*.github.io` there is no `/api`, so the catalog and storefront load from the snapshots in `data/`
+(`data/products.json`, `data/storefront.json`) and discount codes are unavailable. Refresh the snapshots from `/api/products` and `/api/storefront` when products change.
+
 ## Home page notes
 
 - No build step and no runtime dependencies: vanilla JS plus a ~4 KB raw-WebGL shader.

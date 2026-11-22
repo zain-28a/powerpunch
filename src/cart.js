@@ -8,7 +8,7 @@ const discountRequest=(items)=>({code:discountCode,lines:discountLines(items)});
 function storeDiscount(code){try{if(code)localStorage.setItem(DISCOUNT_KEY,code);else localStorage.removeItem(DISCOUNT_KEY);}catch{}}
 function discountError(reason){return ({invalid_code:'الكود غير صالح أو انتهت صلاحيته.',invalid_items:'الأسعار أو المنتجات تغيّرت. حدّث الصفحة وحاول من جديد.',invalid_request:'تحقّق من الكود ومحتويات السلة.'})[reason]||'ما قدرنا نتحقق من الكود. جرّب مرة تانية أو أزله للمتابعة.';}
 async function requestDiscount(body,items){
- const r=await fetch('/api/discount/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(8000)});
+ const r=await ppFetch('/api/discount/quote',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(8000)});
  const quote=await r.json();
  if(quote.error)return quote;
  if(!r.ok||quote.code!==body.code||quote.subtotalCents!==Math.round(orderTotal(items)*100)||!Number.isSafeInteger(quote.discountCents)||quote.discountCents<0||quote.totalCents!==quote.subtotalCents-quote.discountCents||!Number.isFinite(quote.expiresAt))return {error:'invalid_items'};
