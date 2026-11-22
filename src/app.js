@@ -78,7 +78,7 @@ function initialize(){
  initializeShop();
  document.querySelectorAll('[data-flip-gear]').forEach(el=>{const id=Number(el.dataset.flipGear),p=products[id];if(p)el.innerHTML=flipGear(p.type,p.colors[0][1])});
  document.querySelectorAll('[data-hero-gear]').forEach(el=>{const id=Number(el.dataset.heroGear),p=products[id];if(p)el.innerHTML=flipGear(p.type,p.colors[0][1])});
- import('/src/garment3d.bundle.js').then(module=>module.initializeGarments()).catch(()=>{});
+ import('./garment3d.bundle.js').then(module=>module.initializeGarments()).catch(()=>{});
  const intersection=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('show');intersection.unobserve(e.target)}}),{threshold:.09});document.querySelectorAll('.reveal, .reveal-x').forEach(x=>intersection.observe(x));
  document.addEventListener('click',e=>{
   const sw=e.target.closest('[data-swatch]');if(sw){const [i,k]=sw.dataset.swatch.split(':').map(Number),p=products[i],card=sw.closest('.product-card');card.querySelectorAll('.swatch').forEach(b=>b.setAttribute('aria-pressed',b===sw));card.querySelector('.product-visual').querySelector('svg,img').outerHTML=productArt(p,k);document.getElementById('color-'+i).textContent=p.colors[k][0];updateCardStock(card,p,k,i);return;}

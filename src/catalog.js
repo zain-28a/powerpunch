@@ -8,7 +8,7 @@ function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 async function loadCatalog() {
-  const [response, storefront] = await Promise.all([fetch('/api/products',{cache:'no-store'}),window.supplementExamples?fetch('/api/storefront',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null):null]);
+  const [response, storefront] = await Promise.all([ppFetch('/api/products',{cache:'no-store'}),window.supplementExamples?ppFetch('/api/storefront',{cache:'no-store'}).then(r=>r.ok?r.json():null).catch(()=>null):null]);
   if(window.supplementExamples){
     if(!storefront)throw new Error('Storefront could not be loaded');
     const data=storefront.supplements;

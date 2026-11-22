@@ -10,7 +10,7 @@
   const clamp = (v, min = 0, max = 1) => Math.min(max, Math.max(min, v));
 
   /* ---------- Editable landing copy (existing storefront API) ---------- */
-  fetch('/api/storefront')
+  ppFetch('/api/storefront')
     .then(r => (r.ok ? r.json() : null))
     .then(storefront => {
       const landing = storefront && storefront.landing;
@@ -249,7 +249,7 @@
   function loadLight() {
     const canvas = hero?.querySelector('[data-hero-light]');
     if (!canvas || !heroPhoto || reducedQuery.matches || !supportsWebGL()) return;
-    const start = () => import('/src/home-light.js')
+    const start = () => import('./home-light.js')
       .then(mod => {
         light = mod.initHeroLight(canvas, heroPhoto, { coarse: !finePointer.matches });
         light?.setScroll(heroProgress);

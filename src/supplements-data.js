@@ -67,7 +67,7 @@ window.supplementCatalog = {products:[],categories:[]};
 window.equipmentCatalog = {products:[],categories:[]};
 
 window.equipmentExamples = [
-  {id:'eq-demo-gloves',name:'قفازات ملاكمة Power Punch',description:'قفازات مبطنة برباط للمعصم، للتمرين على الكيس.',image:'/products/powerpunch-boxing-hero.webp',price:25,department:'equipment',demo:true},
-  {id:'eq-demo-bag',name:'كيس ملاكمة Power Punch',description:'كيس ملاكمة معلّق للتدرّب على اللكمات والكومبوهات.',image:'/products/powerpunch-boxing-hero.webp',price:65,department:'equipment',demo:true},
-  {id:'eq-demo-training',name:'طقم دمبل وشريط مقاومة',description:'أداتان لتمارين القوة والمقاومة بالبيت أو بالنادي.',image:'/products/equipment-hero.svg',price:30,department:'equipment',demo:true},
+  {id:'eq-demo-gloves',name:'قفازات ملاكمة Power Punch',description:'قفازات مبطنة برباط للمعصم، للتمرين على الكيس.',image:'products/powerpunch-boxing-hero.webp',price:25,department:'equipment',demo:true},
+  {id:'eq-demo-bag',name:'كيس ملاكمة Power Punch',description:'كيس ملاكمة معلّق للتدرّب على اللكمات والكومبوهات.',image:'products/powerpunch-boxing-hero.webp',price:65,department:'equipment',demo:true},
+  {id:'eq-demo-training',name:'طقم دمبل وشريط مقاومة',description:'أداتان لتمارين القوة والمقاومة بالبيت أو بالنادي.',image:'products/equipment-hero.svg',price:30,department:'equipment',demo:true},
 ];
