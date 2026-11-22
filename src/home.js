@@ -181,6 +181,36 @@
     });
   }
 
+  /* ---------- Phone tilt: moves the red light and adds slight 3D depth ---------- */
+  if (hero && motion && !finePointer.matches && 'DeviceOrientationEvent' in window) {
+    let base = null;
+    let pending = null;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      if (!pending) return;
+      const { x, y } = pending;
+      hero.style.setProperty('--px', (x * 0.6).toFixed(4));
+      hero.style.setProperty('--py', (y * 0.6).toFixed(4));
+      light?.setTilt(x, y);
+    };
+    const onOrient = e => {
+      if (e.gamma == null || e.beta == null) return;
+      if (base === null) base = e.beta;
+      pending = { x: clamp(e.gamma / 30, -1, 1), y: clamp((e.beta - base) / 30, -1, 1) };
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    const listen = () => addEventListener('deviceorientation', onOrient, { passive: true });
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS asks for permission, and only after a tap.
+      document.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission().then(state => { if (state === 'granted') listen(); }).catch(() => {});
+      }, { once: true });
+    } else {
+      listen();
+    }
+  }
+
   /* ---------- Category cards: tilt + cursor light (fine pointers only) ---------- */
   if (finePointer.matches && motion) {
     document.querySelectorAll('[data-tilt]').forEach(card => {
