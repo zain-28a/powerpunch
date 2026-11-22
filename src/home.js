@@ -107,6 +107,7 @@
   let lastY = scrollY;
   let queued = false;
   let light = null;
+  let bg = null;
   let lastP = 0;
 
   function onScroll() {
@@ -128,6 +129,8 @@
     lastY = y;
 
     if (!motion) return;
+
+    bg?.setScroll(y / vh);
 
     if (track) {
       const distance = track.offsetHeight - vh;
@@ -262,7 +265,25 @@
     else heroPhoto.addEventListener('load', start, { once: true });
   }
 
+  /* ---------- WebGL page background (lazy) ---------- */
+  function loadBackground() {
+    const canvas = document.querySelector('[data-bg]');
+    if (!canvas || !supportsWebGL()) return;
+    import('./home-bg.js')
+      .then(mod => {
+        bg = mod.initBackground(canvas, { coarse: !finePointer.matches });
+        bg?.setScroll(scrollY / innerHeight);
+        if (bg && motion && finePointer.matches) {
+          addEventListener('pointermove', e => {
+            if (e.pointerType === 'mouse') bg.setPointer(e.clientX / innerWidth - 0.5, 0.5 - e.clientY / innerHeight);
+          }, { passive: true });
+        }
+      })
+      .catch(() => {});
+  }
+
   const idle = window.requestIdleCallback || (cb => setTimeout(cb, 300));
-  if (document.readyState === 'complete') idle(loadLight);
-  else addEventListener('load', () => idle(loadLight), { once: true });
+  const startLazy = () => idle(() => { loadLight(); loadBackground(); });
+  if (document.readyState === 'complete') startLazy();
+  else addEventListener('load', startLazy, { once: true });
 })();
