@@ -51,11 +51,12 @@ void main(){
   vec2 l1 = vec2(.62 * sin(s * 1.2 + .7), .30 * cos(s * .8));
   vec2 l2 = vec2(-.7 * cos(s * .7 + 1.1), -.28 + .22 * sin(s * 1.05));
   vec2 d1 = p - l1, d2 = p - l2;
-  float light = .6 * exp(-dot(d1, d1) * 2.6) + .4 * exp(-dot(d2, d2) * 3.4);
+  // Tight falloff: red only appears as a few small glows, the rest stays black.
+  float light = .6 * exp(-dot(d1, d1) * 8.) + .4 * exp(-dot(d2, d2) * 10.);
 
   vec3 col = vec3(.031);
-  col += vec3(.973, .012, .024) * light * (.016 + smoke * .06);
-  col += vec3(.07) * smoke * .22;
+  col += vec3(.973, .012, .024) * light * (.03 + smoke * .13);
+  col += vec3(.07) * smoke * .12;
   col *= 1. - .22 * dot(p, p);
   col += (hash(gl_FragCoord.xy * .5) - .5) / 255.;
   gl_FragColor = vec4(clamp(col, 0., 1.), 1.);
