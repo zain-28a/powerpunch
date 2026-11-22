@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 420">
+<defs>
+ <linearGradient id="rim" x2=".8" y2="1" gradientUnits="objectBoundingBox"><stop stop-color="#747781"/><stop offset=".32" stop-color="#40424a"/><stop offset="1" stop-color="#101116"/></linearGradient>
+ <linearGradient id="rubber" x2=".7" y2="1"><stop stop-color="#41444c"/><stop offset=".45" stop-color="#24262c"/><stop offset="1" stop-color="#0e0f12"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#1d1f24"/><stop offset=".23" stop-color="#acb1ba"/><stop offset=".48" stop-color="#575a64"/><stop offset=".78" stop-color="#272a31"/><stop offset="1" stop-color="#b0b3bb"/></linearGradient>
+ <linearGradient id="band" x2="0" y2="1"><stop stop-color="#ee5263"/><stop offset=".36" stop-color="#e91a35"/><stop offset="1" stop-color="#710a20"/></linearGradient>
+ <radialGradient id="shadow"><stop stop-color="#17141a" stop-opacity=".32"/><stop offset="1" stop-color="#17141a" stop-opacity="0"/></radialGradient>
+ <path id="hex" d="M-60-58H42Q49-58 53-52L86-3Q89 3 86 12L53 63Q49 70 42 70H-60Q-67 70-71 63L-102 12Q-106 4-102-3L-71-52Q-67-58-60-58Z"/>
+ <g id="plate"><use href="#hex" transform="translate(35 -17)" fill="#181a20"/><path d="M-60-58l35-17h102l-35 17zm-42 55 35-17 31-49-35 17zm155 66 35-17 33-51-35 17z" fill="url(#rim)"/><use href="#hex" fill="url(#rubber)" stroke="#5d6069" stroke-width="1.6"/><use href="#hex" transform="scale(.84)" fill="none" stroke="#626672" stroke-opacity=".58" stroke-width="1.2"/><path d="M-68 32h49m-44 8h39m-33 8h28" fill="none" stroke="#777b87" stroke-opacity=".28" stroke-width="2" stroke-linecap="round"/></g>
+</defs>
+<ellipse cx="321" cy="347" rx="272" ry="43" fill="url(#shadow)"/>
+<g transform="translate(401 258) rotate(13)">
+ <ellipse cx="0" cy="15" rx="132" ry="55" fill="none" stroke="#700d20" stroke-width="23"/>
+ <ellipse cx="0" cy="0" rx="132" ry="55" fill="none" stroke="url(#band)" stroke-width="23"/>
+ <ellipse cx="0" cy="-5" rx="132" ry="55" fill="none" stroke="#fa7785" stroke-width="2" opacity=".65"/>
+</g>
+<g transform="translate(310 192) rotate(-22)">
+ <g transform="translate(137 -3) scale(.88)"><use href="#plate"/></g>
+ <rect x="-104" y="-18" width="240" height="36" rx="10" fill="url(#steel)" stroke="#2a2b31"/>
+ <path d="M-79-13H91 M-79-7H91 M-79 0H91 M-79 7H91 M-79 13H91" stroke="#1e2028" stroke-width="1.2" stroke-dasharray="2 4" opacity=".65"/>
+ <g transform="translate(-143 13)"><use href="#plate"/><path d="M-45 0h65" stroke="#e82240" stroke-width="7" stroke-linecap="round"/></g>
+</g>
+</svg>
