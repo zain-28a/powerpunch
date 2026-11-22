@@ -9,12 +9,20 @@ attribute vec2 aPos;
 void main(){ gl_Position = vec4(aPos, 0., 1.); }`;
 
 const FRAG = `
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+#else
 precision mediump float;
+#endif
 uniform vec2 uRes;
 uniform float uScroll;
 uniform vec2 uPointer;
 
-float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float hash(vec2 p){
+  vec3 p3 = fract(vec3(p.xyx) * .1031);
+  p3 += dot(p3, p3.yzx + 33.33);
+  return fract((p3.x + p3.y) * p3.z);
+}
 float noise(vec2 p){
   vec2 i = floor(p), f = fract(p);
   vec2 u = f * f * (3. - 2. * f);
@@ -49,8 +57,8 @@ void main(){
   col += vec3(.973, .012, .024) * light * (.05 + smoke * .22);
   col += vec3(.07) * smoke * .22;
   col *= 1. - .22 * dot(p, p);
-  col += (hash(gl_FragCoord.xy) - .5) / 255.;
-  gl_FragColor = vec4(col, 1.);
+  col += (hash(gl_FragCoord.xy * .5) - .5) / 255.;
+  gl_FragColor = vec4(clamp(col, 0., 1.), 1.);
 }`;
 
 export function initBackground(canvas, { coarse = false } = {}) {
