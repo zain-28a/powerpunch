@@ -1,0 +1,73 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+:root{--red:#ec1532;--ink:#141416;--paper:#f7f6f3;--muted:#57565a}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Cairo,Arial,sans-serif}
+a{color:inherit;text-decoration:none}
+a:focus-visible{outline:3px solid var(--red);outline-offset:-5px}
+.landing-header{display:flex;align-items:center;justify-content:space-between;min-height:88px;padding:10px max(5vw,calc((100vw - 1250px)/2));border-top:4px solid var(--red);border-bottom:1px solid #deddd8;gap:15px}
+.landing-header .brand{display:block;width:170px;max-width:40%;flex:none}
+.landing-header .brand svg{display:block;width:100%;height:63px}
+.landing-header nav{display:flex;gap:clamp(12px,4vw,44px);font-weight:800}
+.landing-header nav a{padding:8px 0}
+.landing-header nav a:hover{color:#bf1028}
+.shell{width:min(90%,1250px);margin:auto}
+.intro{padding:clamp(52px,9vw,130px) 0 clamp(34px,5vw,70px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.78fr);align-items:center;gap:24px}
+.tag{margin:0 0 10px;font-weight:900;font-size:12px;letter-spacing:.04em;color:#c91029}
+.intro h1{font-size:clamp(49px,8vw,125px);line-height:1.13;font-weight:900;margin:0;letter-spacing:-.04em;overflow-wrap:anywhere}
+.intro-copy{max-width:48ch;font-size:clamp(16px,2.25vw,22px);line-height:1.85;color:var(--muted);margin:20px 0}
+.intro-mark{font:italic 900 clamp(40px,9.5vw,145px)/.82 Arial,sans-serif;letter-spacing:-.09em;color:#dedbd5;user-select:none;justify-self:center}
+.intro-mark span{color:var(--red)}
+.jump,.banner-cta{display:inline-flex;align-items:center;gap:24px;padding:10px 17px;font-weight:900;border-radius:6px;background:var(--ink);color:white}
+.intro-details{border-top:1px solid #d9d6cf;padding:24px 0 50px;display:grid;grid-template-columns:1fr 1fr;gap:clamp(16px,5vw,65px)}
+.intro-details h2{font-size:clamp(22px,3.25vw,38px);line-height:1.22;margin:0;font-weight:900;overflow-wrap:anywhere}
+.detail-copy{color:var(--muted);margin:9px 0 0;line-height:1.8;white-space:pre-line}
+.department{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1fr);align-items:center;min-height:clamp(345px,38vw,545px);padding:0 max(5vw,calc((100vw - 1250px)/2));overflow:hidden;isolation:isolate;position:relative}
+.supplement-banner{background:#eae8e5;border-top:1px solid #d8d5d0}
+.clothes-banner{background:#17171b;color:#fff;border-top:4px solid var(--red)}
+.clothes-banner .tag{color:#ff5f72}
+.banner-copy{z-index:2;margin-block:25px;transition:opacity .25s}
+.banner-copy h2{font-size:clamp(55px,9vw,128px);font-weight:900;line-height:1.15;letter-spacing:-.04em;margin:0}
+.banner-copy p{font-size:clamp(17px,2.8vw,26px);margin:8px 0 20px;font-weight:700}
+.banner-cta{background:#d50e2a}
+.department:hover .banner-cta,.department:focus-visible .banner-cta{background:#ae1025}
+.banner-art{position:relative;min-width:0;aspect-ratio:1.45;perspective:800px;direction:ltr}
+.jars .product-sprite{position:absolute;display:block;bottom:17%;filter:drop-shadow(0 12px 10px #19151a37);transition:transform .45s cubic-bezier(.2,.75,.25,1)}
+.jars .sprite-1{left:7%;width:31%;transform:rotate(-12deg)}
+.jars .sprite-2{right:5%;width:32%;transform:rotate(12deg)}
+.jars .featured{width:34%;left:32%;bottom:9%;transform:rotate(-4deg)}
+.department:is(:hover,:focus-visible) .featured{transform:translateZ(90px) translateY(-8%) rotateY(-16deg) rotate(-3deg)}
+.shirt .garment-3d{position:absolute;inset:-8% 0;transition:transform .55s cubic-bezier(.2,.75,.25,1);transform:rotate(-8deg);filter:drop-shadow(10px 12px 18px #0008)}
+.shirt img,.shirt canvas{width:100%;height:100%;object-fit:contain;display:block}
+.shirt .garment-3d.is-ready img{display:none}
+.clothes-banner:is(:hover,:focus-visible) .garment-3d{transform:translateZ(90px) scale(1.1) rotate(-3deg)}
+.jar-cap,.burst{position:absolute;pointer-events:none;display:none}
+.departing .jar-cap{display:block;left:39%;bottom:71%;width:23%;height:12%;background:#17171a;border:2px solid #3a3a3d;border-radius:50% 50% 22% 22%;z-index:3;animation:cap-pop .62s both}
+.departing .burst{display:block;left:49%;bottom:75%;width:9px;height:9px;border-radius:100%;background:#f2debc;box-shadow:-14px -16px #ead6b4,15px -11px #fff3da,-41px -5px #e6d4b5,28px -39px #ffe9de,-22px -46px #ec1631,43px -16px #fff1c2,49px 0 #e61531;z-index:3;animation:burst-pop .7s both}
+.supplement-banner.departing .featured{clip-path:inset(13% 0 0);transform:translateZ(90px) rotate(-8deg) scale(1.08)}
+.transition-layer{position:fixed;inset:0;z-index:20;pointer-events:none;display:grid;place-items:center;animation:scene-cover .67s ease both;background:#17171b}
+.transition-layer img{width:min(85vw,510px);height:80vh;object-fit:contain;animation:shirt-zoom .67s ease-in both}
+@keyframes cap-pop{from{transform:translate(0,30px) rotate(-4deg)}to{transform:translate(75px,-175px) rotate(85deg);opacity:0}}
+@keyframes burst-pop{from{transform:scale(.3);opacity:0}25%{opacity:1}to{transform:translateY(-155px) scale(2.8);opacity:0}}
+@keyframes scene-cover{from{background:#17171b00}to{background:#17171b}}
+@keyframes shirt-zoom{from{transform:scale(.56) rotate(-8deg)}to{transform:scale(4) rotate(7deg)}}
+footer{background:#111;color:#fff;padding:25px 5%;display:flex;justify-content:space-between;font-size:13px;gap:10px}
+footer span{color:#c2bfc1}
+@media(max-width:650px){
+ .landing-header{min-height:70px}.landing-header .brand svg{height:49px}.landing-header nav{font-size:14px}
+ .intro{grid-template-columns:1fr;position:relative;isolation:isolate;padding:55px 0 35px}.intro-mark{position:absolute;z-index:-1;left:0;top:26px;opacity:.2;font-size:18vw}
+ .intro-details{padding-bottom:33px;grid-template-columns:1fr;gap:20px}
+ .department{min-height:325px;grid-template-columns:minmax(0,.87fr) minmax(0,1.13fr)}
+ .banner-copy h2{font-size:clamp(28px,8.1vw,51px)}.banner-copy p{font-size:15px}.banner-cta{padding:9px;gap:6px;font-size:12px}
+ .banner-art{width:110%;justify-self:center;aspect-ratio:1.05}
+ .jars .featured{width:42%;left:29%}.jars .sprite-1{width:35%;left:2%}.jars .sprite-2{width:35%;right:2%}.shirt .garment-3d{inset:-6% -6%}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.department *{transition:none!important;animation:none!important}}
+.equipment-banner{background:radial-gradient(ellipse at 22% 55%,#f5f4f4,#e0dfe3 81%);border-top:4px solid var(--red)}
+.equipment-banner h2{font-size:clamp(39px,7vw,102px)}
+.equipment-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:rotate(-3deg);transition:transform .52s cubic-bezier(.2,.75,.25,1)}
+.equipment-banner:is(:hover,:focus-visible) .equipment-art img{transform:translateZ(100px) translateY(-3%) rotate(3deg) scale(1.06)}
+.equipment-banner.departing .equipment-art img{transform:translateZ(180px) scale(1.25) rotate(9deg)}
+.equipment-banner.departing .banner-copy{opacity:.55}
+.landing-header nav a{white-space:nowrap}
+@media(max-width:650px){.landing-header nav{gap:clamp(8px,2.7vw,17px);font-size:clamp(10px,3vw,14px)}.landing-header .brand{max-width:34%}.equipment-banner h2{font-size:clamp(25px,7.6vw,48px)}}
