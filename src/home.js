@@ -255,14 +255,17 @@
   function loadLight() {
     const canvas = hero?.querySelector('[data-hero-light]');
     if (!canvas || !heroPhoto || !motion || !supportsWebGL()) return;
-    const start = () => import('./home-light.js')
+    // The shader reads contours from an opaque copy of the photo; the page shows
+    // the transparent version so the photo needs no blend mode or background box.
+    const source = new Image();
+    source.decoding = 'async';
+    source.onload = () => import('./home-light.js')
       .then(mod => {
-        light = mod.initHeroLight(canvas, heroPhoto, { coarse: !finePointer.matches });
+        light = mod.initHeroLight(canvas, source, { coarse: !finePointer.matches });
         light?.setScroll(clamp(lastP / 0.5));
       })
       .catch(() => {});
-    if (heroPhoto.complete && heroPhoto.naturalWidth) start();
-    else heroPhoto.addEventListener('load', start, { once: true });
+    source.src = heroPhoto.dataset.lightSrc || heroPhoto.currentSrc || heroPhoto.src;
   }
 
   /* ---------- WebGL page background (lazy) ---------- */

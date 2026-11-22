@@ -54,7 +54,7 @@ void main(){
   float light = .6 * exp(-dot(d1, d1) * 2.6) + .4 * exp(-dot(d2, d2) * 3.4);
 
   vec3 col = vec3(.031);
-  col += vec3(.973, .012, .024) * light * (.05 + smoke * .22);
+  col += vec3(.973, .012, .024) * light * (.03 + smoke * .12);
   col += vec3(.07) * smoke * .22;
   col *= 1. - .22 * dot(p, p);
   col += (hash(gl_FragCoord.xy * .5) - .5) / 255.;

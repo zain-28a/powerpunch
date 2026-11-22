@@ -44,16 +44,19 @@ void main(){
   float haze = exp(-dist * dist * 9.) * (1. - body) * .10;
 
   vec3 red = vec3(.973, .012, .024);
-  vec3 col = red * (rim * .8 + fill + haze) + vec3(1., .9, .88) * rim * rim * .10;
+  vec3 col = red * (rim * .6 + fill * .7 + haze * .6) + vec3(1., .9, .88) * rim * rim * .10;
   vec2 e = min(vUv, 1. - vUv);
   float frame = smoothstep(0., .1, min(e.x, e.y));
-  gl_FragColor = vec4(col * uIntensity * frame, 1.);
+  // Premultiplied output: the light is purely additive, so it composites over
+  // the transparent-black photo and the page background without any box.
+  vec3 lit = col * uIntensity * frame;
+  gl_FragColor = vec4(lit, max(lit.r, max(lit.g, lit.b)));
 }`;
 
 export function initHeroLight(canvas, image, { coarse = false } = {}) {
   const gl = canvas.getContext('webgl', {
-    alpha: false, antialias: false, depth: false, stencil: false,
-    premultipliedAlpha: false, preserveDrawingBuffer: false, powerPreference: 'low-power',
+    alpha: true, antialias: false, depth: false, stencil: false,
+    premultipliedAlpha: true, preserveDrawingBuffer: false, powerPreference: 'low-power',
   });
   if (!gl) return null;
 
