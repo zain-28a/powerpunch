@@ -184,23 +184,32 @@
     });
   }
 
-  /* ---------- Phone tilt: moves the red light and adds slight 3D depth ---------- */
+  /* ---------- Phone tilt: gently moves the red light only ---------- */
   if (hero && motion && !finePointer.matches && 'DeviceOrientationEvent' in window) {
-    let base = null;
-    let pending = null;
+    // Raw sensor values are noisy, jump near vertical and change axes in
+    // landscape, so they are normalised, filtered and slowly re-centred.
+    let base = null;          // neutral pose, drifts toward how the phone is held
+    let sx = 0, sy = 0;       // smoothed output
     let raf = 0;
+    const angle = () => (screen.orientation && typeof screen.orientation.angle === 'number' ? screen.orientation.angle : (window.orientation || 0));
     const apply = () => {
       raf = 0;
-      if (!pending) return;
-      const { x, y } = pending;
-      hero.style.setProperty('--px', (x * 0.6).toFixed(4));
-      hero.style.setProperty('--py', (y * 0.6).toFixed(4));
-      light?.setTilt(x, y);
+      light?.setTilt(sx, sy);
     };
     const onOrient = e => {
       if (e.gamma == null || e.beta == null) return;
-      if (base === null) base = e.beta;
-      pending = { x: clamp(e.gamma / 30, -1, 1), y: clamp((e.beta - base) / 30, -1, 1) };
+      let x = e.gamma, y = e.beta;
+      const a = ((angle() % 360) + 360) % 360;
+      if (a === 90) [x, y] = [y, -x];
+      else if (a === 270) [x, y] = [-y, x];
+      else if (a === 180) [x, y] = [-x, -y];
+      if (base === null) base = { x, y };
+      const dx = x - base.x, dy = y - base.y;
+      if (Math.abs(dx) > 45 || Math.abs(dy) > 45) { base = { x, y }; return; } // flip / spike: re-centre
+      base.x += dx * 0.01; base.y += dy * 0.01;                               // slow re-centring
+      const dead = v => (Math.abs(v) < 2 ? 0 : v - Math.sign(v) * 2);
+      const tx = clamp(dead(dx) / 25, -1, 1), ty = clamp(dead(dy) / 25, -1, 1);
+      sx += (tx - sx) * 0.15; sy += (ty - sy) * 0.15;
       if (!raf) raf = requestAnimationFrame(apply);
     };
     const listen = () => addEventListener('deviceorientation', onOrient, { passive: true });
