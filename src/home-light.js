@@ -108,8 +108,8 @@ export function initHeroLight(canvas, image, { coarse = false } = {}) {
     tilt: { x: 0, y: 0 },
   };
   const target = () => ({
-    x: 0.74 - state.scroll * 0.55 + state.pointer.x * 0.6 + state.tilt.x * 0.35,
-    y: 0.08 + state.scroll * 0.22 + state.pointer.y * 0.35 + state.tilt.y * 0.2,
+    x: 0.74 - state.scroll * 0.55 + state.pointer.x * 0.6 + state.tilt.x * 0.18,
+    y: 0.08 + state.scroll * 0.22 + state.pointer.y * 0.35 + state.tilt.y * 0.1,
   });
   let raf = 0;
   let visible = true;
