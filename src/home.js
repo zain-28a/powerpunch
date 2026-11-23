@@ -107,6 +107,7 @@
   let lastY = scrollY;
   let queued = false;
   let light = null;
+  let bg = null;
   let lastP = 0;
 
   function onScroll() {
@@ -128,6 +129,8 @@
     lastY = y;
 
     if (!motion) return;
+
+    bg?.setScroll(y / vh);
 
     if (track) {
       const distance = track.offsetHeight - vh;
@@ -181,6 +184,36 @@
     });
   }
 
+  /* ---------- Phone tilt: moves the red light and adds slight 3D depth ---------- */
+  if (hero && motion && !finePointer.matches && 'DeviceOrientationEvent' in window) {
+    let base = null;
+    let pending = null;
+    let raf = 0;
+    const apply = () => {
+      raf = 0;
+      if (!pending) return;
+      const { x, y } = pending;
+      hero.style.setProperty('--px', (x * 0.6).toFixed(4));
+      hero.style.setProperty('--py', (y * 0.6).toFixed(4));
+      light?.setTilt(x, y);
+    };
+    const onOrient = e => {
+      if (e.gamma == null || e.beta == null) return;
+      if (base === null) base = e.beta;
+      pending = { x: clamp(e.gamma / 30, -1, 1), y: clamp((e.beta - base) / 30, -1, 1) };
+      if (!raf) raf = requestAnimationFrame(apply);
+    };
+    const listen = () => addEventListener('deviceorientation', onOrient, { passive: true });
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS asks for permission, and only after a tap.
+      document.addEventListener('click', () => {
+        DeviceOrientationEvent.requestPermission().then(state => { if (state === 'granted') listen(); }).catch(() => {});
+      }, { once: true });
+    } else {
+      listen();
+    }
+  }
+
   /* ---------- Category cards: tilt + cursor light (fine pointers only) ---------- */
   if (finePointer.matches && motion) {
     document.querySelectorAll('[data-tilt]').forEach(card => {
@@ -222,17 +255,38 @@
   function loadLight() {
     const canvas = hero?.querySelector('[data-hero-light]');
     if (!canvas || !heroPhoto || !motion || !supportsWebGL()) return;
-    const start = () => import('./home-light.js')
+    // The shader reads contours from an opaque copy of the photo; the page shows
+    // the transparent version so the photo needs no blend mode or background box.
+    const source = new Image();
+    source.decoding = 'async';
+    source.onload = () => import('./home-light.js')
       .then(mod => {
-        light = mod.initHeroLight(canvas, heroPhoto, { coarse: !finePointer.matches });
+        light = mod.initHeroLight(canvas, source, { coarse: !finePointer.matches });
         light?.setScroll(clamp(lastP / 0.5));
       })
       .catch(() => {});
-    if (heroPhoto.complete && heroPhoto.naturalWidth) start();
-    else heroPhoto.addEventListener('load', start, { once: true });
+    source.src = heroPhoto.dataset.lightSrc || heroPhoto.currentSrc || heroPhoto.src;
+  }
+
+  /* ---------- WebGL page background (lazy) ---------- */
+  function loadBackground() {
+    const canvas = document.querySelector('[data-bg]');
+    if (!canvas || !supportsWebGL()) return;
+    import('./home-bg.js')
+      .then(mod => {
+        bg = mod.initBackground(canvas, { coarse: !finePointer.matches });
+        bg?.setScroll(scrollY / innerHeight);
+        if (bg && motion && finePointer.matches) {
+          addEventListener('pointermove', e => {
+            if (e.pointerType === 'mouse') bg.setPointer(e.clientX / innerWidth - 0.5, 0.5 - e.clientY / innerHeight);
+          }, { passive: true });
+        }
+      })
+      .catch(() => {});
   }
 
   const idle = window.requestIdleCallback || (cb => setTimeout(cb, 300));
-  if (document.readyState === 'complete') idle(loadLight);
-  else addEventListener('load', () => idle(loadLight), { once: true });
+  const startLazy = () => idle(() => { loadLight(); loadBackground(); });
+  if (document.readyState === 'complete') startLazy();
+  else addEventListener('load', startLazy, { once: true });
 })();

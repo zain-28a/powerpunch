@@ -44,16 +44,21 @@ void main(){
   float haze = exp(-dist * dist * 9.) * (1. - body) * .10;
 
   vec3 red = vec3(.973, .012, .024);
-  vec3 col = red * (rim * .8 + fill + haze) + vec3(1., .9, .88) * rim * rim * .10;
+  vec3 col = red * (rim * 1.0 + fill + haze * 1.2) + vec3(1., .9, .88) * rim * rim * .12;
   vec2 e = min(vUv, 1. - vUv);
   float frame = smoothstep(0., .1, min(e.x, e.y));
-  gl_FragColor = vec4(col * uIntensity * frame, 1.);
+  // Premultiplied output: the light is purely additive, so it composites over
+  // the transparent-black photo and the page background without any box.
+  vec3 lit = col * uIntensity * frame;
+  // Mostly additive (like the original screen blend): low alpha, so the light
+  // brightens the photo instead of covering it.
+  gl_FragColor = vec4(lit, max(lit.r, max(lit.g, lit.b)) * .3);
 }`;
 
 export function initHeroLight(canvas, image, { coarse = false } = {}) {
   const gl = canvas.getContext('webgl', {
-    alpha: false, antialias: false, depth: false, stencil: false,
-    premultipliedAlpha: false, preserveDrawingBuffer: false, powerPreference: 'low-power',
+    alpha: true, antialias: false, depth: false, stencil: false,
+    premultipliedAlpha: true, preserveDrawingBuffer: false, powerPreference: 'low-power',
   });
   if (!gl) return null;
 
@@ -94,13 +99,18 @@ export function initHeroLight(canvas, image, { coarse = false } = {}) {
   const uTexel = u('uTexel'), uLight = u('uLight'), uAspect = u('uAspect'), uIntensity = u('uIntensity');
   gl.uniform2f(uTexel, 1.6 / image.naturalWidth, 1.6 / image.naturalHeight);
 
-  const REST = { x: 0.7, y: 0.1 };
+  // Light target = scroll path + mouse offset + device-tilt offset (all in uv space).
   const state = {
-    x: 0.08, y: -0.12,            // current light position (uv)
-    tx: REST.x, ty: REST.y,       // target
+    x: 0.08, y: -0.12,            // current light position
     i: 0, ti: 1,                  // intensity
-    scroll: 0, pointer: false,
+    scroll: 0,
+    pointer: { x: 0, y: 0 },
+    tilt: { x: 0, y: 0 },
   };
+  const target = () => ({
+    x: 0.74 - state.scroll * 0.55 + state.pointer.x * 0.6 + state.tilt.x * 0.35,
+    y: 0.08 + state.scroll * 0.22 + state.pointer.y * 0.35 + state.tilt.y * 0.2,
+  });
   let raf = 0;
   let visible = true;
   let lost = false;
@@ -122,19 +132,19 @@ export function initHeroLight(canvas, image, { coarse = false } = {}) {
   function draw() {
     if (lost) return;
     gl.uniform2f(uLight, state.x, state.y);
-    gl.uniform1f(uIntensity, state.i * (1 - state.scroll * 0.85));
+    gl.uniform1f(uIntensity, state.i * (1 - state.scroll * 0.45));
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
   }
 
   function tick() {
     raf = 0;
     if (!visible || lost) return;
-    const k = state.pointer ? 0.09 : 0.035;
-    state.x += (state.tx - state.x) * k;
-    state.y += (state.ty - state.y) * k;
+    const t = target();
+    state.x += (t.x - state.x) * 0.06;
+    state.y += (t.y - state.y) * 0.06;
     state.i += (state.ti - state.i) * 0.04;
     draw();
-    if (Math.abs(state.tx - state.x) > 0.0008 || Math.abs(state.ty - state.y) > 0.0008 || Math.abs(state.ti - state.i) > 0.002) {
+    if (Math.abs(t.x - state.x) > 0.0008 || Math.abs(t.y - state.y) > 0.0008 || Math.abs(state.ti - state.i) > 0.002) {
       raf = requestAnimationFrame(tick);
     }
   }
@@ -153,25 +163,24 @@ export function initHeroLight(canvas, image, { coarse = false } = {}) {
   wake();
 
   return {
+    // Pointer position in the viewport, as -0.5..0.5 offsets.
     setPointer(clientX, clientY) {
-      const r = canvas.getBoundingClientRect();
-      state.pointer = true;
-      state.tx = (clientX - r.left) / r.width;
-      state.ty = (clientY - r.top) / r.height;
+      state.pointer.x = clientX / innerWidth - 0.5;
+      state.pointer.y = clientY / innerHeight - 0.5;
       wake();
     },
     releasePointer() {
-      state.pointer = false;
-      state.tx = REST.x; state.ty = REST.y;
+      state.pointer.x = 0; state.pointer.y = 0;
       wake();
     },
+    // Device tilt, normalised to -1..1.
+    setTilt(x, y) {
+      state.tilt.x = x; state.tilt.y = y;
+      wake();
+    },
+    // Progress of the hero exit, 0..1.
     setScroll(p) {
       state.scroll = p;
-      if (coarse || !state.pointer) {
-        // On touch devices the light slowly travels across the athlete as the page scrolls.
-        state.tx = REST.x - p * 0.5;
-        state.ty = REST.y + p * 0.25;
-      }
       wake();
     },
   };
