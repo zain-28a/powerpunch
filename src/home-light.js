@@ -50,7 +50,9 @@ void main(){
   // Premultiplied output: the light is purely additive, so it composites over
   // the transparent-black photo and the page background without any box.
   vec3 lit = col * uIntensity * frame;
-  gl_FragColor = vec4(lit, max(lit.r, max(lit.g, lit.b)));
+  // Mostly additive (like the original screen blend): low alpha, so the light
+  // brightens the photo instead of covering it.
+  gl_FragColor = vec4(lit, max(lit.r, max(lit.g, lit.b)) * .3);
 }`;
 
 export function initHeroLight(canvas, image, { coarse = false } = {}) {
