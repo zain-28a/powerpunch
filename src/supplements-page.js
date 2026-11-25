@@ -59,7 +59,7 @@
   function renderFocus(instant) {
     const p = byId(labItems[labFocus]); if (!p) return;
     const fill = () => {
-      $('[data-focus-name]').textContent = p.name;
+      $('[data-focus-name]').innerHTML = productNameMarkup(p);
       $('[data-focus-meta]').textContent = totalStock(p) ? metaOf(p) : 'نفدت الكمية';
       $('[data-focus-price]').innerHTML = money(p.price);
       focusBox.classList.remove('is-changing');
@@ -98,12 +98,12 @@
   }
   function renderGrid() {
     const q = norm(query);
-    const list = data().products.filter(p => (active === 'all' || p.categoryId === active) && (!q || norm(p.name).includes(q) || norm(p.description).includes(q)));
+    const list = data().products.filter(p => (active === 'all' || p.categoryId === active) && (!q || norm(p.name).includes(q) || norm(p.englishName).includes(q) || norm(p.catalogName).includes(q) || norm(p.description).includes(q)));
     gridEl.innerHTML = list.map(p => {
       const img = p.image || photosOf(p)[0];
       return `<button type="button" class="card" data-product="${esc(p.id)}" aria-label="${esc(p.name)}">
         <span class="card-media square">${img ? `<img src="${esc(cdn(img, 500))}" srcset="${esc(cdn(img, 360))} 360w, ${esc(cdn(img, 640))} 640w" sizes="(max-width:900px) 46vw, 23vw" alt="" loading="lazy" decoding="async">` : ''}${totalStock(p) ? '' : '<span class="sold-out">نفدت الكمية</span>'}</span>
-        <span class="card-body ar"><span><span class="card-name">${esc(p.name)}</span><span class="card-sub">${esc(metaOf(p))}</span></span><span class="card-side"><span class="price">${money(p.price)}</span></span></span></button>`;
+        <span class="card-body ar"><span><span class="card-name">${productNameMarkup(p)}</span><span class="card-sub">${esc(metaOf(p))}</span></span><span class="card-side"><span class="price">${money(p.price)}</span></span></span></button>`;
     }).join('') || '<p class="empty-note">لا توجد منتجات مطابقة.</p>';
   }
   filtersEl.addEventListener('click', e => { const b = e.target.closest('[data-filter]'); if (!b) return; active = b.dataset.filter; renderFilters(); renderGrid(); if (FEATURED[active] && active !== labCat) setLabCategory(active); });
@@ -128,7 +128,7 @@
     const html = `
       <div class="gallery-main">${photos[photo] ? `<img src="${esc(cdn(photos[photo], 900))}" alt="${esc(p.name)}">` : ''}</div>
       ${photos.length > 1 ? `<div class="thumbs" role="group" aria-label="صور المنتج">${photos.map((u, k) => `<button type="button" data-photo="${k}" aria-pressed="${k === photo}" aria-label="الصورة ${k + 1}"><img src="${esc(cdn(u, 160))}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}
-      <div><h2 class="sheet-title" id="sheet-title">${esc(p.name)}</h2><p class="price" style="margin-top:4px">${money(p.price)}</p></div>
+      <div><h2 class="sheet-title" id="sheet-title">${productNameMarkup(p)}</h2><p class="price" style="margin-top:4px">${money(p.price)}</p></div>
       ${weights.length ? `<div><div class="field-label">الوزن</div>${weights.length > 1 ? `<div class="options" role="group" aria-label="الوزن">${weights.map(w => `<button type="button" data-weight="${esc(w)}" aria-pressed="${w === weight}" ${(flavors.length ? flavors : ['']).some(f => stockOf(p, w, f) > 0) ? '' : 'disabled'}>${esc(w)}</button>`).join('')}</div>` : `<p class="fixed-option">${esc(weights[0])}</p>`}</div>` : ''}
       ${flavors.length ? `<div><div class="field-label">النكهة</div><div class="options" role="group" aria-label="النكهة">${flavors.map(f => `<button type="button" data-flavor="${esc(f)}" aria-pressed="${f === flavor}" ${stockOf(p, weight, f) > 0 ? '' : 'disabled'}>${esc(f)}</button>`).join('')}</div></div>` : ''}
       <p class="stock-line ${stock ? '' : 'is-out'}">${stock ? 'متوفر' : 'غير متوفر حالياً'}</p>

@@ -12,7 +12,7 @@ async function loadCatalog() {
   if(window.supplementExamples){
     if(!storefront)throw new Error('Storefront could not be loaded');
     const data=storefront.supplements;
-    Object.assign(window.supplementCatalog,{categories:data.categories,products:data.products.length?data.products:window.supplementExamples.products});
+    Object.assign(window.supplementCatalog,{categories:data.categories,products:(data.products.length?data.products:window.supplementExamples.products).map(withProductNames)});
     if(window.equipmentCatalog){
       const equipment=storefront.equipment;
       Object.assign(window.equipmentCatalog,{categories:equipment?.categories??[],products:equipment?.products?.length?equipment.products:(window.equipmentExamples??[])});
@@ -21,7 +21,7 @@ async function loadCatalog() {
   if(!response.ok) throw new Error('Catalog could not be loaded');
   const catalog=await response.json();
   if(!Array.isArray(catalog.products)) throw new Error('Invalid catalog');
-  products=catalog.products;
+  products=catalog.products.map(withProductNames);
   categories=catalog.categories||[];
   offers=catalog.offers||[];
   rotatingShirt=catalog.rotatingShirt||null;

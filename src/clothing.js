@@ -20,8 +20,8 @@
   const LENGTH = { compression: 0.78, tee: 0.78, shell: 0.78, shorts: 0.56, joggers: 1.08, hoodie: 1.5 };
 
   const $ = s => document.querySelector(s);
-  const showroom = $('[data-showroom]'), track = $('[data-showroom-track]'), fallback = $('[data-fallback]');
-  const focusBox = $('[data-focus]'), gridEl = $('[data-grid]'), filtersEl = $('[data-filters]');
+  const showroom = $('[data-showroom]'), fallback = $('[data-fallback]');
+  const gridEl = $('[data-grid]'), filtersEl = $('[data-filters]');
   const cutoutUrl = (id, c) => `products/clothing/${id}-${c}.webp`;
   const sizesOf = p => [...new Set(p.variants.map(v => v.size))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
   const totalStock = p => p.variants.reduce((n, v) => n + v.quantity, 0);
@@ -32,57 +32,42 @@
   const firstColor = p => { const i = p.colors.findIndex((_, c) => colorStock(p, c) > 0); return i < 0 ? 0 : i; };
   const showColor = (p, c) => (CUTOUTS[p.id]?.[c] ? c : Number(Object.keys(CUTOUTS[p.id] || { 0: 1 })[0]));
 
-  let rail = [], focusIndex = 0, scene = null, pinned = false;
+  let rail = [], focusIndex = 0, scene = null, targetIndex = 0;
   const railColor = new Map();
 
   /* ---------- Focus info ---------- */
-  function renderFocus(i, instant) {
+  function renderFocus(i) {
     const p = rail[i]; if (!p) return;
-    const fill = () => {
-      $('[data-focus-name]').textContent = p.name;
-      const out = totalStock(p) === 0;
-      $('[data-focus-meta]').textContent = out ? 'نفدت الكمية' : `${p.colors.length} ${p.colors.length > 2 ? 'ألوان' : 'لون'} · ${sizesOf(p).join(' ')}`;
-      $('[data-focus-price]').innerHTML = priceOf(p);
-      focusBox.classList.remove('is-changing');
-    };
-    if (instant) return fill();
-    focusBox.classList.add('is-changing'); clearTimeout(renderFocus.t); renderFocus.t = setTimeout(fill, 180);
-  }
-  function setFocus(i, { fromScroll = false } = {}) {
-    i = Math.max(0, Math.min(rail.length - 1, i));
-    if (i === focusIndex && rail.length) { if (!fromScroll) scrollToIndex(i); return; }
-    focusIndex = i; renderFocus(i);
-    fallback.querySelectorAll('button').forEach((b, k) => b.classList.toggle('is-focus', k === i));
-    $('[data-prev]').disabled = i === 0; $('[data-next]').disabled = i === rail.length - 1;
-    if (!fromScroll) scrollToIndex(i);
+    focusIndex = i;
+    const colors = p.colors.filter((_, c) => colorStock(p, c) > 0);
+    const sizes = sizesOf(p).filter(size => p.variants.some(v => v.size === size && v.quantity > 0));
+    $('[data-focus-name]').innerHTML = productNameMarkup(p);
+    $('[data-focus-meta]').innerHTML = totalStock(p)
+      ? `متوفر · ${colors.map(c => esc(c[0])).join('، ')} · <bdi dir="ltr">${esc(sizes.join(' / '))}</bdi>`
+      : 'نفدت الكمية';
+    $('[data-focus-price]').innerHTML = priceOf(p);
+    $('[data-focus-position]').textContent = `${i + 1} / ${rail.length}`;
+    const bar = $('[data-progress]');
+    bar.style.setProperty('--w', `${100 / rail.length}%`);
+    bar.style.setProperty('--x', String(i));
+    [...fallback.children].forEach((b, k) => b.classList.toggle('is-focus', k === i));
   }
 
-  /* ---------- Scroll ↔ rail position ---------- */
-  const stepPx = () => Math.round(innerHeight * (innerWidth < 900 ? 0.4 : 0.34));
-  function layoutTrack() {
-    if (!pinned) { track.style.height = ''; return; }
-    track.style.height = `${innerHeight + stepPx() * (rail.length - 1)}px`;
+  function updateArrows() {
+    $('[data-prev]').disabled = targetIndex === 0;
+    $('[data-next]').disabled = targetIndex >= rail.length - 1;
   }
-  function progress() {
-    const r = track.getBoundingClientRect(), dist = track.offsetHeight - innerHeight;
-    return dist > 0 ? Math.min(1, Math.max(0, -r.top / dist)) : 0;
-  }
-  function scrollToIndex(i) {
-    if (pinned) {
-      const top = track.getBoundingClientRect().top + scrollY + stepPx() * i;
-      scrollTo({ top, behavior: reduced ? 'auto' : 'smooth' });
-    } else if (scene) {
-      scene.setPosition(i);
-    } else {
-      fallback.children[i]?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', inline: 'center', block: 'nearest' });
+
+  function setFocus(i) {
+    if (!rail.length) return;
+    targetIndex = Math.max(0, Math.min(rail.length - 1, i));
+    updateArrows();
+    if (scene) scene.snapTo(targetIndex);
+    else {
+      const button = fallback.children[targetIndex];
+      fallback.scrollTo({ left: button.offsetLeft + (button.offsetWidth - fallback.clientWidth) / 2,
+        behavior: reduced ? 'instant' : 'smooth' });
     }
-  }
-  function onScroll() {
-    if (!pinned || !rail.length) return;
-    const pos = progress() * (rail.length - 1);
-    scene?.setPosition(pos);
-    const bar = $('[data-progress]'); bar.style.setProperty('--w', `${100 / rail.length}%`); bar.style.setProperty('--x', String(pos));
-    const i = Math.round(pos); if (i !== focusIndex) setFocus(i, { fromScroll: true });
   }
 
   /* ---------- Showroom (fallback rail first, WebGL when available) ---------- */
@@ -90,29 +75,32 @@
     rail = RAIL_ORDER.map(id => products.find(p => p.id === id)).filter(Boolean);
     rail.forEach(p => railColor.set(p.id, showColor(p, firstColor(p))));
     fallback.innerHTML = rail.map((p, i) => `<button type="button" data-pick="${i}" tabindex="-1"><img src="${cutoutUrl(p.id, railColor.get(p.id))}" alt="" loading="${i < 4 ? 'eager' : 'lazy'}" decoding="async"></button>`).join('');
-    fallback.addEventListener('click', e => { const b = e.target.closest('[data-pick]'); if (b) openProduct(rail[Number(b.dataset.pick)]); });
+    fallback.addEventListener('click', e => { const b = e.target.closest('[data-pick]'); if (b) { const i = Number(b.dataset.pick); if (i === focusIndex) openProduct(rail[i]); else setFocus(i); } });
     let t; fallback.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(() => {
       const mid = fallback.scrollLeft + fallback.clientWidth / 2; let best = 0, bd = Infinity;
       [...fallback.children].forEach((b, k) => { const d = Math.abs(b.offsetLeft + b.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
-      if (!scene) setFocus(best, { fromScroll: true });
+      if (!scene) { targetIndex = best; renderFocus(best); updateArrows(); }
     }, 80); }, { passive: true });
-    focusIndex = -1; setFocus(0, { fromScroll: true }); renderFocus(0, true);
+    renderFocus(0); updateArrows();
     $('[data-focus-open]').disabled = false;
   }
   function supportsWebGL() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } }
   function startScene() {
-    if (!supportsWebGL()) return;
+    if (!rail.length || !supportsWebGL()) return;
     import('./showroom.js').then(({ createShowroom }) => {
       scene = createShowroom($('[data-canvas]'), rail.map(p => {
         const c = railColor.get(p.id);
         return { id: p.id, url: cutoutUrl(p.id, c), aspect: CUTOUTS[p.id][c], length: LENGTH[p.type] || 0.8 };
-      }), { mobile: !fine, motion: !reduced, onPick: i => { if (i === focusIndex) openProduct(rail[i]); else setFocus(i); } });
+      }), {
+        mobile: !fine, motion: !reduced,
+        onNavigate: delta => setFocus(targetIndex + delta),
+        onCenter: renderFocus,
+        onPick: i => { if (i === focusIndex && i === targetIndex) openProduct(rail[i]); else setFocus(i); },
+        onFallback: () => { scene = null; setFocus(targetIndex); },
+      });
       if (!scene) return;
       showroom.classList.add('is-3d');
-      pinned = !reduced; document.documentElement.classList.toggle('pinned', pinned);
-      layoutTrack(); scene.setPosition(focusIndex, true);
-      if (pinned) { const pos = progress() * (rail.length - 1); scene.setPosition(pos, true); }
-      onScroll();
+      scene.snapTo(targetIndex, true);
     }).catch(() => {});
   }
 
@@ -132,7 +120,7 @@
       const photo = productPhotos(p, 0)[0], out = totalStock(p) === 0, sale = p.salePrice !== undefined && p.salePrice !== null;
       return `<button type="button" class="card" data-product="${esc(p.id)}" aria-label="${esc(p.name)}">
         <span class="card-media">${photo ? `<img src="${esc(cdn(photo, 600))}" srcset="${esc(cdn(photo, 400))} 400w, ${esc(cdn(photo, 700))} 700w" sizes="(max-width:900px) 46vw, 23vw" alt="" loading="lazy" decoding="async">` : ''}${out ? '<span class="sold-out">نفدت الكمية</span>' : ''}</span>
-        <span class="card-body ar"><span><span class="card-name">${esc(p.name)}</span><span class="dots">${p.colors.map(c => `<i style="background:${esc(c[1] || '#555')}" title="${esc(c[0])}"></i>`).join('')}</span></span>
+        <span class="card-body ar"><span><span class="card-name">${productNameMarkup(p)}</span><span class="dots">${p.colors.map(c => `<i style="background:${esc(c[1] || '#555')}" title="${esc(c[0])}"></i>`).join('')}</span></span>
         <span class="card-side">${sale ? '<span class="sale-tag">Sale</span>' : ''}<span class="price">${priceOf(p)}</span></span></span></button>`;
     }).join('') || '<p class="empty-note">لا توجد منتجات في هذه الفئة حالياً.</p>';
   }
@@ -156,7 +144,7 @@
     const html = `
       <div class="gallery-main">${photos[photo] ? `<img src="${esc(cdn(photos[photo], 900))}" alt="${esc(p.name)} — ${esc(p.colors[color][0])}">` : ''}</div>
       ${photos.length > 1 ? `<div class="thumbs" role="group" aria-label="صور المنتج">${photos.map((u, k) => `<button type="button" data-photo="${k}" aria-pressed="${k === photo}" aria-label="الصورة ${k + 1}"><img src="${esc(cdn(u, 160))}" alt="" loading="lazy"></button>`).join('')}</div>` : ''}
-      <div><h2 class="sheet-title" id="sheet-title">${esc(p.name)}</h2><p class="price" style="margin-top:4px">${priceOf(p)}</p></div>
+      <div><h2 class="sheet-title" id="sheet-title">${productNameMarkup(p)}</h2><p class="price" style="margin-top:4px">${priceOf(p)}</p></div>
       ${p.description ? `<p class="sheet-desc">${esc(p.description)}</p>` : ''}
       <div><div class="field-label">اللون <b>${esc(p.colors[color][0])}</b></div><div class="swatches" role="group" aria-label="اللون">${p.colors.map((c, k) => `<button type="button" data-color="${k}" aria-pressed="${k === color}" aria-label="${esc(c[0])}${colorStock(p, k) ? '' : ' — نفد'}" class="${colorStock(p, k) ? '' : 'is-empty'}" style="background:${esc(c[1] || '#555')}"></button>`).join('')}</div></div>
       <div><div class="field-label">المقاس</div><div class="options sizes" dir="ltr" role="group" aria-label="المقاس">${sizesOf(p).map(s => `<button type="button" data-size="${esc(s)}" aria-pressed="${s === size}" ${variantStock(p, color, s) > 0 ? '' : 'disabled'}>${esc(s)}</button>`).join('')}</div></div>
@@ -190,12 +178,14 @@
   });
 
   /* ---------- Wiring ---------- */
-  $('[data-prev]').addEventListener('click', () => setFocus(focusIndex - 1));
-  $('[data-next]').addEventListener('click', () => setFocus(focusIndex + 1));
+  $('[data-prev]').addEventListener('click', () => setFocus(targetIndex - 1));
+  $('[data-next]').addEventListener('click', () => setFocus(targetIndex + 1));
   $('[data-focus-open]').addEventListener('click', () => openProduct(rail[focusIndex]));
-  showroom.addEventListener('keydown', e => { if (e.key === 'ArrowRight') setFocus(focusIndex + 1); if (e.key === 'ArrowLeft') setFocus(focusIndex - 1); });
-  addEventListener('scroll', () => requestAnimationFrame(onScroll), { passive: true });
-  addEventListener('resize', () => { layoutTrack(); onScroll(); });
+  showroom.addEventListener('keydown', e => {
+    if (e.altKey || e.ctrlKey || e.metaKey || !['ArrowRight', 'ArrowLeft'].includes(e.key)) return;
+    e.preventDefault();
+    setFocus(targetIndex + (e.key === 'ArrowRight' ? 1 : -1));
+  });
 
   bootStore(err => {
     if (err) { gridEl.innerHTML = '<p class="empty-note">تعذّر تحميل المنتجات حالياً.</p>'; return; }

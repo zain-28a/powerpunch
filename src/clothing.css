@@ -1,13 +1,12 @@
 /* PowerPunch — Clothing showroom */
 .showroom-track{position:relative}
 .showroom{position:relative;height:100vh;height:100svh;min-height:600px;overflow:hidden;background:linear-gradient(#080808 0 60%,#0d0d0f 100%)}
-.pinned .showroom{position:sticky;top:0}
-.showroom-canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity .8s ease;touch-action:pan-y}
-.showroom.is-3d .showroom-canvas{opacity:1;cursor:pointer}
-.showroom.is-3d .showroom-fallback{opacity:0;pointer-events:none}
+.showroom-canvas{position:absolute;top:0;left:0;width:100%;height:calc(100% - 155px);display:block;opacity:0;pointer-events:none;user-select:none;transition:opacity .25s ease;touch-action:pan-y}
+.showroom.is-3d .showroom-canvas{opacity:1;pointer-events:auto;cursor:grab}
+.showroom.is-3d .showroom-fallback{visibility:hidden;pointer-events:none}
 
 /* Fallback / pre-load: a plain horizontal rail of the same cut-out garments */
-.showroom-fallback{position:absolute;left:0;right:0;top:var(--header-h);bottom:200px;display:flex;align-items:flex-start;gap:clamp(20px,4vw,60px);padding:46px max(24px,calc(50vw - 170px)) 0;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;transition:opacity .6s ease}
+.showroom-fallback{position:absolute;left:0;right:0;top:var(--header-h);bottom:200px;display:flex;align-items:flex-start;gap:clamp(20px,4vw,60px);padding:46px calc((100% - clamp(200px,24vw,340px))/2) 0;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
 .showroom-fallback::-webkit-scrollbar{display:none}
 .showroom-fallback{border-top:1px solid rgba(247,247,247,.2)}
 .showroom-fallback button{position:relative;flex:none;width:clamp(200px,24vw,340px);height:100%;padding:0;border:0;background:none;cursor:pointer;scroll-snap-align:center;opacity:.55;transition:opacity .3s}
@@ -26,15 +25,20 @@
 .focus-meta{margin-top:2px;font-size:14px;color:var(--text-faint)}
 .focus-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
 .focus-arrows{display:flex;gap:6px}
-.focus [data-focus-name],.focus [data-focus-meta],.focus [data-focus-price]{transition:opacity .25s}
-.focus.is-changing [data-focus-name],.focus.is-changing [data-focus-meta],.focus.is-changing [data-focus-price]{opacity:0}
 
 @media (max-width:900px){
   .showroom-copy{display:none}
   .showroom-progress{display:none}
   .focus{left:18px;right:18px;width:auto;bottom:max(22px,env(safe-area-inset-bottom));gap:10px}
   .focus-name{font-size:19px}
-  .showroom-fallback{bottom:230px;padding-top:40px}
+  .showroom-fallback{bottom:230px;padding:40px 19vw 0}
   .showroom-fallback button{width:62vw}
 }
-@media (max-height:640px) and (max-width:900px){.focus-meta{display:none}}
+
+
+.showroom.is-3d .showroom-canvas.is-dragging{cursor:grabbing}
+.showroom:focus-visible{outline:1px solid var(--text-muted);outline-offset:-2px}
+.focus-arrows{align-items:center}
+.focus-position{font-size:12px;white-space:nowrap;color:var(--text-muted)}
+@media (max-width:900px){.showroom-canvas{height:calc(100% - 185px)}}
+@media (prefers-reduced-motion:reduce){.showroom-canvas,.showroom-progress span{transition:none}}
