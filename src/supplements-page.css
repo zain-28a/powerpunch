@@ -1,0 +1,37 @@
+/* PowerPunch — Supplements product lab */
+.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.lab{position:relative;height:100vh;height:100svh;min-height:640px;overflow:hidden;background:linear-gradient(#080808 0 66%,#0f0f11 100%)}
+.lab-bench{position:absolute;left:0;right:0;top:66%;height:1px;background:rgba(247,247,247,.14)}
+.lab-copy{position:absolute;left:var(--gutter);top:calc(var(--header-h) + clamp(40px,9vh,90px));z-index:3;max-width:330px}
+.lab-copy .display{margin-top:10px;font-size:clamp(48px,5vw,72px)}
+.lab-copy p.ar{margin-top:14px;font-size:15px;line-height:1.8;color:var(--text-muted)}
+.lab-stage{position:absolute;left:30%;right:4%;top:calc(var(--header-h) + 40px);bottom:34%;perspective:1200px}
+.lab-item{position:absolute;bottom:0;display:block;padding:0;border:0;background:none;cursor:pointer;transform-origin:50% 100%;transition:transform .7s var(--ease-out),opacity .5s,filter .5s;will-change:transform}
+.lab-item img{display:block;width:100%;height:100%;object-fit:contain;object-position:50% 100%;transform:rotateY(var(--ry,0deg)) rotateX(var(--rx,0deg));transition:transform .5s var(--ease-out)}
+.lab-item::after{content:"";position:absolute;left:12%;right:12%;bottom:-8px;height:16px;border-radius:50%;background:rgba(0,0,0,.75);filter:blur(9px);z-index:-1}
+.lab-item.is-side{opacity:.5;filter:brightness(.75)}
+.lab-item:focus-visible{outline-offset:8px}
+.lab-stage.is-swapping .lab-item{opacity:0;transform:translateY(14px)}
+.lab-tabs{position:absolute;left:var(--gutter);bottom:clamp(36px,7vh,64px);z-index:3;max-width:calc(100% - 440px - var(--gutter))}
+.lab .focus{position:absolute;right:var(--gutter);bottom:clamp(36px,7vh,64px);z-index:3;width:340px;display:grid;gap:14px}
+.lab .focus-name{font:700 22px/1.4 var(--body);min-height:1.4em}
+.lab .focus-meta{margin-top:2px;font-size:14px;color:var(--text-faint)}
+.lab .focus-row{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.lab .focus-arrows{display:flex;gap:6px}
+.focus [data-focus-name],.focus [data-focus-meta],.focus [data-focus-price]{transition:opacity .25s}
+.focus.is-changing [data-focus-name],.focus.is-changing [data-focus-meta],.focus.is-changing [data-focus-price]{opacity:0}
+.catalog-head .search{flex:0 1 340px}
+
+@media (max-width:1100px){.lab-stage{left:28%}}
+@media (max-width:900px){
+  .lab{min-height:600px}
+  .lab-copy{top:calc(var(--header-h) + 18px)}
+  .lab-copy p.ar{display:none}
+  .lab-copy .display{font-size:44px}
+  .lab-stage{left:4%;right:4%;top:calc(var(--header-h) + 118px);bottom:auto;height:30svh}
+  .lab-bench{top:calc(var(--header-h) + 118px + 30svh)}
+  .lab-tabs{left:18px;right:18px;max-width:none;bottom:auto;top:calc(var(--header-h) + 130px + 30svh)}
+  .lab .focus{left:18px;right:18px;width:auto;bottom:max(22px,env(safe-area-inset-bottom));gap:10px}
+  .lab .focus-name{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){.lab-item,.lab-item img{transition:none}}
