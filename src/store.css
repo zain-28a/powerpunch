@@ -171,3 +171,7 @@ body.store{background:var(--black)}
 
 /* Equipment: intentionally empty between the shared header and footer */
 .equipment-empty{min-height:72vh;min-height:72svh}
+
+/* Product names keep their own reading direction within the existing layouts. */
+.product-name{unicode-bidi:isolate;display:inline-block;text-align:start;overflow-wrap:anywhere;letter-spacing:normal}
+.product-name-en{display:inline-block;max-width:100%;font-size:.76em;font-weight:500;opacity:.78}
