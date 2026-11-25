@@ -1,0 +1,56 @@
+name: Refresh product data
+
+# GitHub Pages has no /api, so the shop pages read data/*.json there.
+# This copies the live catalogue from powerpunch.site once a day and
+# redeploys Pages when anything changed.
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download catalogue
+        run: |
+          set -euo pipefail
+          mkdir -p tmp
+          curl -fsS --retry 3 -m 60 https://powerpunch.site/api/products -o tmp/products.json
+          curl -fsS --retry 3 -m 60 https://powerpunch.site/api/storefront -o tmp/storefront.json
+      - name: Validate
+        run: |
+          python3 - <<'EOF'
+          import json
+          p = json.load(open('tmp/products.json'))
+          s = json.load(open('tmp/storefront.json'))
+          assert isinstance(p.get('products'), list) and p['products'], 'no clothing products'
+          assert isinstance(s.get('supplements', {}).get('products'), list), 'no supplements'
+          print(len(p['products']), 'clothing,', len(s['supplements']['products']), 'supplements')
+          EOF
+      - name: Commit if changed
+        id: commit
+        run: |
+          set -euo pipefail
+          python3 -c "import json;[json.dump(json.load(open(f'tmp/{n}.json')),open(f'data/{n}.json','w'),ensure_ascii=False,separators=(',',':')) for n in ('products','storefront')]"
+          rm -rf tmp
+          if git diff --quiet -- data; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data && git commit -m "Refresh product data from powerpunch.site"
+          git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Redeploy Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run pages.yml --ref "${GITHUB_REF_NAME}"
